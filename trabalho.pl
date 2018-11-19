@@ -1,13 +1,13 @@
 doenca(X) :- doenca_respiratoria(X).
 doenca(X) :- doenca_cardiovascular(X).
-doenca(X) :- doenca_outra(X).
+doenca(X) :- doenca_cronica(X).
 
-doenca_outra(diabetes).
-doenca_outra(hepatite_a).
-doenca_outra(hepaite_b).
-doenca_outra(hepatite_c).
-doenca_outra(hepatite_d).
-doenca_outra(...).
+doenca_cronica(diabetes).
+doenca_cronica(hepatite_a).
+doenca_cronica(hepaite_b).
+doenca_cronica(hepatite_c).
+doenca_cronica(cirrose).
+doenca_cronica(...).
 
 doenca_respiratoria(pneumonia).
 doenca_respiratoria(asma).
@@ -29,8 +29,6 @@ sintoma_hepatite_a(X) :- sintoma(X, hepatite_a).
 sintoma_hepatite_b(X) :- sintoma(X, hepatite_b).
 sintoma_hepatite_c(X) :- sintoma(X, hepatite_c).
 sintoma_hepatite_d(X) :- sintoma(X, hepatite_d).
-
-
 
 
 listaSintomas(X):-sintoma(X,diabetes).
@@ -57,6 +55,37 @@ sintoma(dificuldade_para_respirar_deitando, diabetes).
 sintoma(chiado_na_respiracao, diabetes).
 sintoma(abatimento, diabetes).
 
+
+sintoma(febre, hepatite_a).
+sintoma(dor_abdominal, hepatite_a).
+sintoma(calafrios, hepatite_a).
+sintoma(fluidos_no_pulmao, hepatite_a).
+sintoma(vomito,hepatite_a).
+sintoma(anorexia,hepatite_a).
+sintoma(enzimas_no_sangue,hepatite_a).
+sintoma(coceira_severa,hepatite_a).
+sintoma(respiracao_rapida,hepatite_a).
+sintoma(rompimento_de_membranas,hepatite_a).
+sintoma(fluidos_no_abdomem,hepatite_a).
+
+sintoma(gemidos,hepatite_b).
+sintoma(cadeirante,hepatite_b).
+sintoma(abdomem_sensivel_ao_toque,hepatite_b).
+sintoma(vomito,hepatite_b).
+sintoma(catarro_amerelo,hepatite_b).
+sintoma(dificuldade_de_alimentacao,hepatite_b).
+sintoma(respiracao_rapida,hepatite_b).
+sintoma(atos_emocionalmente_incongruentes,hepatite_b).
+
+sintoma(dor,hepatite_c).
+sintoma(sentimentos_suicidas,hepatite_c).
+sintoma(alucinacoes_auditorias,hepatite_c).
+sintoma(tosse,hepatite_c).
+sintoma(abdomem_distendido,hepatite_c).
+sintoma(calafrios,hepatite_c).
+sintoma(recuso_de_cooperacao,hepatite_c).
+sintoma(tremor_nas_maos,hepatite_c).
+sintoma(sentindo_pesado,hepatite_c).
 
 sintoma(tosse, pneumonia).
 sintoma(chiado_na_respiracao, pneumonia).
