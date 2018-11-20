@@ -1,3 +1,5 @@
+:- use_module(library(heaps)).
+
 doenca(X) :- doencaRespiratoria(X).
 doenca(X) :- doencaCardiovascular(X).
 doenca(X) :- doencaCronica(X).
@@ -29,29 +31,6 @@ doencaVirose(...).
 doencaVirose(...).
 doencaVirose(...).
 doencaVirose(...).
-
-sintoma1(X) :- sintoma(X,_).
-doenca1(X) :- sintoma(_,X).
-listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
-listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
-
-
-doencaPorClasse(C, L) :-
-    (C = cronica ->
-        setof(X, doencaCronica(X), L);
-     C = respiratoria ->
-        setof(X, doencaRespiratoria(X), L);
-     C = cardiovascular ->
-        setof(X, doencaCardiovascular(X), L);
-     C = virose ->
-        setof(X, doencaVirose(X), L)).
-
-spaces(0):- !.
-spaces(N):- write(' '), N1 is N-1, spaces(N1).
-
-pd([]) :- nl.
-pd([H|T]) :- write(H), pd([]), pd(T).
-
 
 sintoma(dor_no_peito, diabetes).
 sintoma(nausea, diabetes).
@@ -163,7 +142,6 @@ sintoma(co2_elevado, pneumotorax).
 sintoma(prostata_pressionando_bexiga, pneumotorax).
 sintoma(falta_de_ar, pneumotorax).
 
-
 sintoma(tremor_no_peito,arritmia_cardiaca).
 sintoma(dor_no_peito,arritmia_cardiaca).
 sintoma(tontura,arritmia_cardiaca).
@@ -212,17 +190,57 @@ sintoma(insuficiencia_cardiada,miocardite).
 
 
 
+sintoma1(X) :- sintoma(X,_).
+doenca1(X) :- sintoma(_,X).
+listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
+listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
+listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
 
 
+doencaPorClasse(C, L) :-
+    (C = cronica ->
+        setof(X, doencaCronica(X), L);
+     C = respiratoria ->
+        setof(X, doencaRespiratoria(X), L);
+     C = cardiovascular ->
+        setof(X, doencaCardiovascular(X), L);
+     C = virose ->
+        setof(X, doencaVirose(X), L)).
 
+spaces(0):- !.
+spaces(N):- write(' '), N1 is N-1, spaces(N1).
 
+indexOf([Element|_], Element, 0):- !.
+indexOf([_|Tail], Element, Index):-
+  indexOf(Tail, Element, Index1),
+  !,
+  Index is Index1+1.
 
+replace([_|T], 0, X, [X|T]).
+replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
 
+pd([]) :- nl.
+pd([H|T]) :- write(H), pd([]), pd(T).
+
+build(X, N, List)  :-
+    length(List, N),
+    maplist(=(X), List).
+
+aumentarPrioridades([], _, _) :- !.
+aumentarPrioridades([ES|LS], LD, LP) :-  indexOf(LD, ES, I), nth(I, LP, EP), replace(LP, I, EP+1), aumentarPrioridade(LS, LD, LP).
+
+confirmaSintomas() :- listaDoencas(LD), length(LD, TD), build(0,TD,LP).
+
+confirmaSintoma(S, LD, LP) :- listaDoencasPorSintoma(S,LS), aumentarPrioridades(LS, LD, LP).
 
 imprimeDoencaPorClasse(C) :- doencaPorClasse(C, L), pd([]), pd(L).
 imprimeTodosSintomas() :- listaSintomas(L), pd(L), !.
 imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
 diagnostico().
+imprimeDoencasDeEmergencia().
+adicionarDoenca().
+indicacaoProfissional().
+login().
 
 
 
