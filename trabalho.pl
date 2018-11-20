@@ -1,43 +1,51 @@
-doenca(X) :- doenca_respiratoria(X).
-doenca(X) :- doenca_cardiovascular(X).
-doenca(X) :- doenca_cronica(X).
+doenca(X) :- doencaRespiratoria(X).
+doenca(X) :- doencaCardiovascular(X).
+doenca(X) :- doencaCronica(X).
+doenca(X) :- doencaVirose(X).
 
-doenca_cronica(diabetes).
-doenca_cronica(hepatite_a).
-doenca_cronica(hepaite_b).
-doenca_cronica(hepatite_c).
-doenca_cronica(cirrose).
-doenca_cronica(...).
+doencaCronica(diabetes).
+doencaCronica(hepatite_a).
+doencaCronica(hepatite_b).
+doencaCronica(hepatite_c).
+doencaCronica(cirrose).
+doencaCronica(...).
 
-doenca_respiratoria(pneumonia).
-doenca_respiratoria(asma).
-doenca_respiratoria(pneumotorax).
-doenca_respiratoria(bronquite).
-doenca_respiratoria(...).
-doenca_respiratoria(...).
+doencaRespiratoria(pneumonia).
+doencaRespiratoria(asma).
+doencaRespiratoria(pneumotorax).
+doencaRespiratoria(bronquite).
+doencaRespiratoria(...).
+doencaRespiratoria(...).
 
-doenca_cardiovascular(acidente_vascular_cerebral).
-doenca_cardiovascular(infarto_do_miocardio).
-doenca_cardiovascular(...).
-doenca_cardiovascular(...).
-doenca_cardiovascular(...).
-doenca_cardiovascular(...).
+doencaCardiovascular(acidente_vascular_cerebral).
+doencaCardiovascular(infarto_do_miocardio).
+doencaCardiovascular(...).
+doencaCardiovascular(...).
+doencaCardiovascular(...).
+doencaCardiovascular(...).
+
+doencaVirose(...).
+doencaVirose(...).
+doencaVirose(...).
+doencaVirose(...).
+doencaVirose(...).
+doencaVirose(...).
+
+sintoma1(X) :- sintoma(X,_).
+doenca1(X) :- sintoma(_,X).
+listaSintomas(X) :-  setof(X, sintoma1(X), L), member(X,L).
+listaDoencas(X) :-  setof(X, doenca1(X), L), member(X,L).
 
 
-sintoma_diabetes(X) :- sintoma(X, diabetes).
-sintoma_hepatite_a(X) :- sintoma(X, hepatite_a).
-sintoma_hepatite_b(X) :- sintoma(X, hepatite_b).
-sintoma_hepatite_c(X) :- sintoma(X, hepatite_c).
-sintoma_hepatite_d(X) :- sintoma(X, hepatite_d).
-
-
-listaSintomas(X):-sintoma(X,diabetes).
-listaSintomas(X):-sintoma(X,pneumonia),\+sintoma(X, diabetes).
-listaSintomas(X):-sintoma(X,avc),\+sintoma(X,diabetes),\+sintoma(X,pneumonia).
-listaSintomas(X):-sintoma(X,asma),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc).
-listaSintomas(X):-sintoma(X,infarto),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc),\+sintoma(X,asma).
-listaSintomas(X):-sintoma(X,pneumotorax),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc),\+sintoma(X,asma),\+sintoma(X,infarto).
-
+doencaPorClasse(C, L) :-
+    (C = cronica ->
+        setof(X, doencaCronica(X), L);
+     C = respiratoria ->
+        setof(X, doencaRespiratoria(X), L);
+     C = cardiovascular ->
+        setof(X, doencaCardiovascular(X), L);
+     C = virose ->
+        setof(X, doencaVirose(X), L)).
 
 
 sintoma(dor_no_peito, diabetes).
