@@ -1,52 +1,114 @@
-doenca(X) :- doencaRespiratoria(X).
-doenca(X) :- doencaCardiovascular(X).
-doenca(X) :- doencaCronica(X).
-doenca(X) :- doencaVirose(X).
+doenca(X) :- doenca_respiratoria(X).
+doenca(X) :- doenca_cardiovascular(X).
+doenca(X) :- doenca_cronica(X).
 
-doencaCronica(diabetes).
-doencaCronica(hepatite_a).
-doencaCronica(hepatite_b).
-doencaCronica(hepatite_c).
-doencaCronica(cirrose).
-doencaCronica(...).
+doenca_cronica(diabetes).
+doenca_cronica(hepatite_a).
+doenca_cronica(hepaite_b).
+doenca_cronica(hepatite_c).
+doenca_cronica(cirrose).
+doenca_cronica(efisema_pulmonar).
 
-doencaRespiratoria(pneumonia).
-doencaRespiratoria(asma).
-doencaRespiratoria(pneumotorax).
-doencaRespiratoria(bronquite).
-doencaRespiratoria(...).
-doencaRespiratoria(...).
+doenca_respiratoria(pneumonia).
+doenca_respiratoria(asma).
+doenca_respiratoria(pneumotorax).
+doenca_respiratoria(bronquite).
+doenca_respiratoria(...).
+doenca_respiratoria(...).
 
-doencaCardiovascular(acidente_vascular_cerebral).
-doencaCardiovascular(infarto_do_miocardio).
-doencaCardiovascular(...).
-doencaCardiovascular(...).
-doencaCardiovascular(...).
-doencaCardiovascular(...).
-
-doencaVirose(...).
-doencaVirose(...).
-doencaVirose(...).
-doencaVirose(...).
-doencaVirose(...).
-doencaVirose(...).
-
-sintoma1(X) :- sintoma(X,_).
-doenca1(X) :- sintoma(_,X).
-listaSintomas(X) :-  setof(X, sintoma1(X), L), member(X,L).
-listaDoencas(X) :-  setof(X, doenca1(X), L), member(X,L).
+doenca_cardiovascular(acidente_vascular_cerebral).
+doenca_cardiovascular(infarto_do_miocardio).
+doenca_cardiovascular(miocardite).
+doenca_cardiovascular(hipertensao1).
+doenca_cardiovascular(sindrome_de_flammer).
+doenca_cardiovascular(arritmia_cardiaca).
 
 
-doencaPorClasse(C, L) :-
-    (C = cronica ->
-        setof(X, doencaCronica(X), L);
-     C = respiratoria ->
-        setof(X, doencaRespiratoria(X), L);
-     C = cardiovascular ->
-        setof(X, doencaCardiovascular(X), L);
-     C = virose ->
-        setof(X, doencaVirose(X), L)).
+sintoma_diabetes(X) :- sintoma(X, diabetes).
+sintoma_hepatite_a(X) :- sintoma(X, hepatite_a).
+sintoma_hepatite_b(X) :- sintoma(X, hepatite_b).
+sintoma_hepatite_c(X) :- sintoma(X, hepatite_c).
+sintoma_hepatite_d(X) :- sintoma(X, hepatite_d).
 
+
+listaSintomas(X):-sintoma(X,diabetes).
+listaSintomas(X):-sintoma(X,pneumonia),\+sintoma(X, diabetes).
+listaSintomas(X):-sintoma(X,avc),\+sintoma(X,diabetes),\+sintoma(X,pneumonia).
+listaSintomas(X):-sintoma(X,asma),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc).
+listaSintomas(X):-sintoma(X,infarto),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc),\+sintoma(X,asma).
+listaSintomas(X):-sintoma(X,pneumotorax),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc),\+sintoma(X,asma),\+sintoma(X,infarto).
+
+
+
+
+
+sintomas(tremor_no_peito,arritmia_cardiaca).
+sintomas(dor_no_peito,arritmia_cardiaca).
+sintomas(tontura,arritmia_cardiaca).
+sintomas(desmaios,arritmia_cardiaca).
+sintomas(palpitacao,arritmia_cardiaca).
+sintomas(falta_de_ar,arritmia_cardiaca).
+sintomas(baixo_ritmo_cardiaco,arritmia_cardiaca).
+
+
+
+
+sintoma(chiado_na_respiracao,efisema_pulmonar).
+sintoma(tosse_seca,efisema_pulmonar).
+sintoma(falta_de_ar,efisema_pulmonar).
+sintoma(tosse_cronica,efisema_pulmonar).
+sintoma(expectoracao,efisema_pulmonar).
+sintoma(secrecao_pulmonar,efisema_pulmonar).
+
+
+
+
+sintoma(dor_de_cabeca,hipertensao1).
+sintoma(dor_na_nuca,hipertensao1).
+sintoma(vertigem,hipertensao1).
+sintoma(tontura,hipertensao1).
+sintoma(tinido,hipertensao1).
+sintoma(visao_alterada,hipertensao1).
+sintoma(desmaios,hipertensao1).
+
+
+sintoma(membros_extremos_frios,sindrome_de_flammer).
+sintoma(hipotensao_arterial,sindrome_de_flammer).
+sintoma(baixo_imc,sindrome_de_flammer).
+sintoma(insonia,sindrome_de_flammer).
+sintoma(alta_sensibilidade_dor,sindrome_de_flammer).
+sintoma(alta_sensibilidade_odor,sindrome_de_flammer).
+sintoma(alta_sensibilidade_medicamentos,sindrome_de_flammer).
+sintoma(enxaqueca,sindrome_de_flammer).
+sintoma(tinido,sindrome_de_flammer).
+sintoma(manchas_na_pele,sindrome_de_flammer).
+sintoma(poquidade_de_sede,sindrome_de_flammer).
+
+
+
+
+
+sintoma(dor_no_peito,miocardite).
+sintoma(palpitacao,miocardite).
+sintoma(morte_subita,miocardite).
+sintoma(febre,miocardite).
+sintoma(inchaco,miocardite).
+sintoma(falta_de_ar,miocardite).
+sintoma(congestao_do_figado,miocardite).
+sintoma(insuficiencia_cardiada,miocardite).
+
+
+sintoma(febre, hepatite_a).
+sintoma(dor_abdominal, hepatite_a).
+sintoma(calafrios, hepatite_a).
+sintoma(fluidos_no_pulmao, hepatite_a).
+sintoma(vomito,hepatite_a).
+sintoma(anorexia,hepatite_a).
+sintoma(enzimas_no_sangue,hepatite_a).
+sintoma(coceira_severa,hepatite_a).
+sintoma(respiracao_rapida,hepatite_a).
+sintoma(rompimento_de_membranas,hepatite_a).
+sintoma(fluidos_no_abdomem,hepatite_a).
 
 sintoma(dor_no_peito, diabetes).
 sintoma(nausea, diabetes).
@@ -62,19 +124,6 @@ sintoma(fraqueza, diabetes).
 sintoma(dificuldade_para_respirar_deitando, diabetes).
 sintoma(chiado_na_respiracao, diabetes).
 sintoma(abatimento, diabetes).
-
-
-sintoma(febre, hepatite_a).
-sintoma(dor_abdominal, hepatite_a).
-sintoma(calafrios, hepatite_a).
-sintoma(fluidos_no_pulmao, hepatite_a).
-sintoma(vomito,hepatite_a).
-sintoma(anorexia,hepatite_a).
-sintoma(enzimas_no_sangue,hepatite_a).
-sintoma(coceira_severa,hepatite_a).
-sintoma(respiracao_rapida,hepatite_a).
-sintoma(rompimento_de_membranas,hepatite_a).
-sintoma(fluidos_no_abdomem,hepatite_a).
 
 sintoma(gemidos,hepatite_b).
 sintoma(cadeirante,hepatite_b).
