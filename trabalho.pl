@@ -8,7 +8,7 @@ doencaCronica(hepatite_a).
 doencaCronica(hepatite_b).
 doencaCronica(hepatite_c).
 doencaCronica(cirrose).
-doencaCronica(...).
+doencaCronica(efisema_pulmonar).
 
 doencaRespiratoria(pneumonia).
 doencaRespiratoria(asma).
@@ -19,12 +19,11 @@ doencaRespiratoria(...).
 
 doencaCardiovascular(acidente_vascular_cerebral).
 doencaCardiovascular(infarto_do_miocardio).
-doencaCardiovascular(...).
-doencaCardiovascular(...).
-doencaCardiovascular(...).
-doencaCardiovascular(...).
+doencaCardiovascular(miocardite).
+doencaCardiovascular(hipertensao1).
+doencaCardiovascular(sindrome_de_flammer).
+doencaCardiovascular(arritmia_cardiaca).
 
-doencaVirose(...).
 doencaVirose(...).
 doencaVirose(...).
 doencaVirose(...).
@@ -33,8 +32,8 @@ doencaVirose(...).
 
 sintoma1(X) :- sintoma(X,_).
 doenca1(X) :- sintoma(_,X).
-listaSintomas(X) :-  setof(X, sintoma1(X), L), member(X,L).
-listaDoencas(X) :-  setof(X, doenca1(X), L), member(X,L).
+listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
+listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
 
 
 doencaPorClasse(C, L) :-
@@ -46,6 +45,12 @@ doencaPorClasse(C, L) :-
         setof(X, doencaCardiovascular(X), L);
      C = virose ->
         setof(X, doencaVirose(X), L)).
+
+spaces(0):- !.
+spaces(N):- write(' '), N1 is N-1, spaces(N1).
+
+pd([]) :- nl.
+pd([H|T]) :- write(H), pd([]), pd(T).
 
 
 sintoma(dor_no_peito, diabetes).
@@ -159,8 +164,65 @@ sintoma(prostata_pressionando_bexiga, pneumotorax).
 sintoma(falta_de_ar, pneumotorax).
 
 
+sintoma(tremor_no_peito,arritmia_cardiaca).
+sintoma(dor_no_peito,arritmia_cardiaca).
+sintoma(tontura,arritmia_cardiaca).
+sintoma(desmaios,arritmia_cardiaca).
+sintoma(palpitacao,arritmia_cardiaca).
+sintoma(falta_de_ar,arritmia_cardiaca).
+sintoma(baixo_ritmo_cardiaco,arritmia_cardiaca).
+
+sintoma(chiado_na_respiracao,efisema_pulmonar).
+sintoma(tosse_seca,efisema_pulmonar).
+sintoma(falta_de_ar,efisema_pulmonar).
+sintoma(tosse_cronica,efisema_pulmonar).
+sintoma(expectoracao,efisema_pulmonar).
+sintoma(secrecao_pulmonar,efisema_pulmonar).
+
+sintoma(dor_de_cabeca,hipertensao1).
+sintoma(dor_na_nuca,hipertensao1).
+sintoma(vertigem,hipertensao1).
+sintoma(tontura,hipertensao1).
+sintoma(tinido,hipertensao1).
+sintoma(visao_alterada,hipertensao1).
+sintoma(desmaios,hipertensao1).
+
+sintoma(membros_extremos_frios,sindrome_de_flammer).
+sintoma(hipotensao_arterial,sindrome_de_flammer).
+sintoma(baixo_imc,sindrome_de_flammer).
+sintoma(insonia,sindrome_de_flammer).
+sintoma(alta_sensibilidade_dor,sindrome_de_flammer).
+sintoma(alta_sensibilidade_odor,sindrome_de_flammer).
+sintoma(alta_sensibilidade_medicamentos,sindrome_de_flammer).
+sintoma(enxaqueca,sindrome_de_flammer).
+sintoma(tinido,sindrome_de_flammer).
+sintoma(manchas_na_pele,sindrome_de_flammer).
+sintoma(poquidade_de_sede,sindrome_de_flammer).
+
+sintoma(dor_no_peito,miocardite).
+sintoma(palpitacao,miocardite).
+sintoma(morte_subita,miocardite).
+sintoma(febre,miocardite).
+sintoma(inchaco,miocardite).
+sintoma(falta_de_ar,miocardite).
+sintoma(congestao_do_figado,miocardite).
+sintoma(insuficiencia_cardiada,miocardite).
 
 
+
+
+
+
+
+
+
+
+
+
+imprimeDoencaPorClasse(C) :- doencaPorClasse(C, L), pd([]), pd(L).
+imprimeTodosSintomas() :- listaSintomas(L), pd(L), !.
+imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
+diagnostico().
 
 
 
