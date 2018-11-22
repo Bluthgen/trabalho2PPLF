@@ -1,114 +1,120 @@
-doenca(X) :- doenca_respiratoria(X).
-doenca(X) :- doenca_cardiovascular(X).
-doenca(X) :- doenca_cronica(X).
+:- use_module(library(heaps)).
 
-doenca_cronica(diabetes).
-doenca_cronica(hepatite_a).
-doenca_cronica(hepaite_b).
-doenca_cronica(hepatite_c).
-doenca_cronica(cirrose).
-doenca_cronica(efisema_pulmonar).
-
-doenca_respiratoria(pneumonia).
-doenca_respiratoria(asma).
-doenca_respiratoria(pneumotorax).
-doenca_respiratoria(bronquite).
-doenca_respiratoria(...).
-doenca_respiratoria(...).
-
-doenca_cardiovascular(acidente_vascular_cerebral).
-doenca_cardiovascular(infarto_do_miocardio).
-doenca_cardiovascular(miocardite).
-doenca_cardiovascular(hipertensao1).
-doenca_cardiovascular(sindrome_de_flammer).
-doenca_cardiovascular(arritmia_cardiaca).
-
-
-sintoma_diabetes(X) :- sintoma(X, diabetes).
-sintoma_hepatite_a(X) :- sintoma(X, hepatite_a).
-sintoma_hepatite_b(X) :- sintoma(X, hepatite_b).
-sintoma_hepatite_c(X) :- sintoma(X, hepatite_c).
-sintoma_hepatite_d(X) :- sintoma(X, hepatite_d).
-
-
-listaSintomas(X):-sintoma(X,diabetes).
-listaSintomas(X):-sintoma(X,pneumonia),\+sintoma(X, diabetes).
-listaSintomas(X):-sintoma(X,avc),\+sintoma(X,diabetes),\+sintoma(X,pneumonia).
-listaSintomas(X):-sintoma(X,asma),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc).
-listaSintomas(X):-sintoma(X,infarto),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc),\+sintoma(X,asma).
-listaSintomas(X):-sintoma(X,pneumotorax),\+sintoma(X,diabetes),\+sintoma(X,pneumonia),\+sintoma(X,avc),\+sintoma(X,asma),\+sintoma(X,infarto).
+doenca(X) :- doencaRespiratoria(X).
+doenca(X) :- doencaCardiovascular(X).
+doenca(X) :- doencaCronica(X).
+doenca(X) :- doencaVirose(X).
 
 
 
+doencaCronica(diabetes).
+doencaCronica(hepatite_a).
+doencaCronica(hepatite_b).
+doencaCronica(hepatite_c).
+doencaCronica(cirrose).
+doencaCronica(efisema_pulmonar).
+
+doencaRespiratoria(pneumonia).
+doencaRespiratoria(asma).
+doencaRespiratoria(pneumotorax).
+doencaRespiratoria(bronquite).
+doencaRespiratoria(cancer_de_pulmao).
+doencaRespiratoria(tuberculose).
+
+doencaCardiovascular(acidente_vascular_cerebral).
+doencaCardiovascular(infarto_do_miocardio).
+doencaCardiovascular(miocardite).
+doencaCardiovascular(hipertensao1).
+doencaCardiovascular(sindrome_de_flammer).
+doencaCardiovascular(arritmia_cardiaca).
+
+doencaVirose(dengue).
+doencaVirose(dengue_hemorragica).
+doencaVirose(rubeola).
+doencaVirose(hiv).
+
+emergencia(acidente_vascular_cerebral).
+emergencia(infarto_do_miocardio).
+emergencia(dengue_hemorragica).
+emergencia(rubeola).
 
 
-sintomas(tremor_no_peito,arritmia_cardiaca).
-sintomas(dor_no_peito,arritmia_cardiaca).
-sintomas(tontura,arritmia_cardiaca).
-sintomas(desmaios,arritmia_cardiaca).
-sintomas(palpitacao,arritmia_cardiaca).
-sintomas(falta_de_ar,arritmia_cardiaca).
-sintomas(baixo_ritmo_cardiaco,arritmia_cardiaca).
+sintoma(febre,hiv).
+sintoma(tosse,hiv).
+sintoma(suor_noturno,hiv).
+sintoma(glanglios_aumentados,hiv).
+sintoma(dor_de_cabeca,hiv).
+sintoma(manchas_vermelhas_na_pele,hiv).
+sintoma(diarreia,hiv).
+sintoma(nausea,hiv).
+sintoma(vomito,hiv).
+sintoma(perda_de_peso,hiv).
+sintoma(dor_nas_articulacoes,hiv).
+sintoma(dor_nos_musculos,hiv).
+sintoma(fadiga,hiv).
+sintoma(candidiase_oral,hiv).
+sintoma(candidiase_genital,hiv).
+sintoma(dificultade_de_concentracao,hiv).
 
 
 
-
-sintoma(chiado_na_respiracao,efisema_pulmonar).
-sintoma(tosse_seca,efisema_pulmonar).
-sintoma(falta_de_ar,efisema_pulmonar).
-sintoma(tosse_cronica,efisema_pulmonar).
-sintoma(expectoracao,efisema_pulmonar).
-sintoma(secrecao_pulmonar,efisema_pulmonar).
-
-
-
-
-sintoma(dor_de_cabeca,hipertensao1).
-sintoma(dor_na_nuca,hipertensao1).
-sintoma(vertigem,hipertensao1).
-sintoma(tontura,hipertensao1).
-sintoma(tinido,hipertensao1).
-sintoma(visao_alterada,hipertensao1).
-sintoma(desmaios,hipertensao1).
-
-
-sintoma(membros_extremos_frios,sindrome_de_flammer).
-sintoma(hipotensao_arterial,sindrome_de_flammer).
-sintoma(baixo_imc,sindrome_de_flammer).
-sintoma(insonia,sindrome_de_flammer).
-sintoma(alta_sensibilidade_dor,sindrome_de_flammer).
-sintoma(alta_sensibilidade_odor,sindrome_de_flammer).
-sintoma(alta_sensibilidade_medicamentos,sindrome_de_flammer).
-sintoma(enxaqueca,sindrome_de_flammer).
-sintoma(tinido,sindrome_de_flammer).
-sintoma(manchas_na_pele,sindrome_de_flammer).
-sintoma(poquidade_de_sede,sindrome_de_flammer).
+sintoma(mal_estar,rubeola).
+sintoma(tosse,rubeola).
+sintoma(espirro,rubeola).
+sintoma(secrecao_nasal,rubeola).
+sintoma(dor_de_cabeca,rubeola).
+sintoma(conjutivite,rubeola).
+sintoma(glanglios_aumentados,rubeola).
+sintoma(manchas_vermelhas,rubeola).
+sintoma(coceira_na_pele,rubeola).
 
 
 
 
 
-sintoma(dor_no_peito,miocardite).
-sintoma(palpitacao,miocardite).
-sintoma(morte_subita,miocardite).
-sintoma(febre,miocardite).
-sintoma(inchaco,miocardite).
-sintoma(falta_de_ar,miocardite).
-sintoma(congestao_do_figado,miocardite).
-sintoma(insuficiencia_cardiada,miocardite).
 
 
-sintoma(febre, hepatite_a).
-sintoma(dor_abdominal, hepatite_a).
-sintoma(calafrios, hepatite_a).
-sintoma(fluidos_no_pulmao, hepatite_a).
-sintoma(vomito,hepatite_a).
-sintoma(anorexia,hepatite_a).
-sintoma(enzimas_no_sangue,hepatite_a).
-sintoma(coceira_severa,hepatite_a).
-sintoma(respiracao_rapida,hepatite_a).
-sintoma(rompimento_de_membranas,hepatite_a).
-sintoma(fluidos_no_abdomem,hepatite_a).
+sintoma(febre,dengue).
+sintoma(vomito,dengue).
+sintoma(dor_de_cabeça,dengue).
+sintoma(dor_no_corpo,dengue).
+sintoma(dor_nos_olhos,dengue).
+sintoma(manchas_vermelhas,dengue).
+sintoma(fadiga,dengue).
+sintoma(dor_nas_articulacoes,dengue).
+sintoma(sangramento_pelo_nariz,dengue).
+sintoma(sangramento_pelo_olhos,dengue).
+sintoma(sangramento_pelo_gengiva,dengue).
+sintoma(cor_urina_alterada,dengue).
+
+sintoma(confusao_mental,dengue_hemorragica).
+sintoma(urina_com_sangue,dengue_hemorragica).
+sintoma(vomito,dengue_hemorragica).
+sintoma(olhos_vermelhos,dengue_hemorragica).
+sintoma(sonolencia,dengue_hemorragica).
+sintoma(agitação,dengue_hemorragica).
+sintoma(sangramento_pelo_nariz,dengue_hemorragica).
+sintoma(sangramento_pelo_gengiva,dengue_hemorragica).
+
+sintoma(tosse_longa,tuberculose).
+sintoma(tosse_com_sangue,tuberculose).
+sintoma(dor_ao_respirar,tuberculose).
+sintoma(falta_de_ar,tuberculose).
+sintoma(febre,tuberculose).
+sintoma(suor_noturno,tuberculose).
+sintoma(perda_de_peso,tuberculose).
+sintoma(dor_no_peito,tuberculose).
+sintoma(catarro_amarelo,tuberculose).
+sintoma(catarro_verde,tuberculose).
+
+sintoma(tosse,cancer_de_pulmao).
+sintoma(falta_de_ar,cancer_de_pulmao).
+sintoma(perda_de_peso,cancer_de_pulmao).
+sintoma(tosse_com_sangue,cancer_de_pulmao).
+sintoma(fadiga,cancer_de_pulmao).
+sintoma(nauseas,cancer_de_pulmao).
+sintoma(dor_no_peito,cancer_de_pulmao).
+sintoma(vomito,cancer_de_pulmao).
 
 sintoma(dor_no_peito, diabetes).
 sintoma(nausea, diabetes).
@@ -124,6 +130,19 @@ sintoma(fraqueza, diabetes).
 sintoma(dificuldade_para_respirar_deitando, diabetes).
 sintoma(chiado_na_respiracao, diabetes).
 sintoma(abatimento, diabetes).
+
+
+sintoma(febre, hepatite_a).
+sintoma(dor_abdominal, hepatite_a).
+sintoma(calafrios, hepatite_a).
+sintoma(fluidos_no_pulmao, hepatite_a).
+sintoma(vomito,hepatite_a).
+sintoma(anorexia,hepatite_a).
+sintoma(enzimas_no_sangue,hepatite_a).
+sintoma(coceira_severa,hepatite_a).
+sintoma(respiracao_rapida,hepatite_a).
+sintoma(rompimento_de_membranas,hepatite_a).
+sintoma(fluidos_no_abdomem,hepatite_a).
 
 sintoma(gemidos,hepatite_b).
 sintoma(cadeirante,hepatite_b).
@@ -207,9 +226,107 @@ sintoma(co2_elevado, pneumotorax).
 sintoma(prostata_pressionando_bexiga, pneumotorax).
 sintoma(falta_de_ar, pneumotorax).
 
+sintoma(tremor_no_peito,arritmia_cardiaca).
+sintoma(dor_no_peito,arritmia_cardiaca).
+sintoma(tontura,arritmia_cardiaca).
+sintoma(desmaios,arritmia_cardiaca).
+sintoma(palpitacao,arritmia_cardiaca).
+sintoma(falta_de_ar,arritmia_cardiaca).
+sintoma(baixo_ritmo_cardiaco,arritmia_cardiaca).
+
+sintoma(chiado_na_respiracao,efisema_pulmonar).
+sintoma(tosse_seca,efisema_pulmonar).
+sintoma(falta_de_ar,efisema_pulmonar).
+sintoma(tosse_cronica,efisema_pulmonar).
+sintoma(expectoracao,efisema_pulmonar).
+sintoma(secrecao_pulmonar,efisema_pulmonar).
+
+sintoma(dor_de_cabeca,hipertensao1).
+sintoma(dor_na_nuca,hipertensao1).
+sintoma(vertigem,hipertensao1).
+sintoma(tontura,hipertensao1).
+sintoma(tinido,hipertensao1).
+sintoma(visao_alterada,hipertensao1).
+sintoma(desmaios,hipertensao1).
+
+sintoma(membros_extremos_frios,sindrome_de_flammer).
+sintoma(hipotensao_arterial,sindrome_de_flammer).
+sintoma(baixo_imc,sindrome_de_flammer).
+sintoma(insonia,sindrome_de_flammer).
+sintoma(alta_sensibilidade_dor,sindrome_de_flammer).
+sintoma(alta_sensibilidade_odor,sindrome_de_flammer).
+sintoma(alta_sensibilidade_medicamentos,sindrome_de_flammer).
+sintoma(enxaqueca,sindrome_de_flammer).
+sintoma(tinido,sindrome_de_flammer).
+sintoma(manchas_na_pele,sindrome_de_flammer).
+sintoma(poquidade_de_sede,sindrome_de_flammer).
+
+sintoma(dor_no_peito,miocardite).
+sintoma(palpitacao,miocardite).
+sintoma(morte_subita,miocardite).
+sintoma(febre,miocardite).
+sintoma(inchaco,miocardite).
+sintoma(falta_de_ar,miocardite).
+sintoma(congestao_do_figado,miocardite).
+sintoma(insuficiencia_cardiada,miocardite).
 
 
 
+
+
+sintoma1(X) :- sintoma(X,_).
+doenca1(X) :- sintoma(_,X).
+listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
+listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
+listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
+
+doencaPorClasse(C, L) :-
+    (C = cronica ->
+        setof(X, doencaCronica(X), L);
+     C = respiratoria ->
+        setof(X, doencaRespiratoria(X), L);
+     C = cardiovascular ->
+        setof(X, doencaCardiovascular(X), L);
+     C = virose ->
+        setof(X, doencaVirose(X), L)).
+
+spaces(0):- !.
+spaces(N):- write(' '), N1 is N-1, spaces(N1).
+
+indexOf([Element|_], Element, 0):- !.
+indexOf([_|Tail], Element, Index):-
+  indexOf(Tail, Element, Index1),
+  !,
+  Index is Index1+1.
+
+replace([_|T], 0, X, [X|T]).
+replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
+
+pd([]) :- nl.
+pd([H|T]) :- write(H), pd([]), pd(T).
+
+build(X, N, List)  :-
+    length(List, N),
+    maplist(=(X), List).
+
+aumentarPrioridades([], _, _) :- !.
+aumentarPrioridades([ES|LS], LD, LP) :-  indexOf(LD, ES, I), nth(I, LP, EP), replace(LP, I, EP+1), aumentarPrioridade(LS, LD, LP).
+
+confirmaSintomas() :- listaDoencas(LD), length(LD, TD), build(0,TD,LP).
+
+confirmaSintoma(S, LD, LP) :- listaDoencasPorSintoma(S,LS), aumentarPrioridades(LS, LD, LP).
+
+imprimeDoencaPorClasse(C) :- doencaPorClasse(C, L), pd([]), pd(L).
+imprimeTodosSintomas() :- listaSintomas(L), pd(L), !.
+imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
+diagnostico().
+imprimeDoencasDeEmergencia(X):- doenca(X),emergencia(X).
+adicionarDoenca().
+login().
+indicaMedico('Cadiologista',Y) :- doencaCardiovascular(Y).
+indicaMedico('Otorinologista',Y) :- doencaRespiratoria(Y).
+indicaMedico('Clinico Geral -> Especialidade Encaminhada',Y) :- doencaCronica(Y).
+indicaMedico('Clinico Geral',Y) :- doencaVirose(Y).
 
 
 
