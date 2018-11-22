@@ -16,8 +16,8 @@ doencaRespiratoria(pneumonia).
 doencaRespiratoria(asma).
 doencaRespiratoria(pneumotorax).
 doencaRespiratoria(bronquite).
-doencaRespiratoria(...).
-doencaRespiratoria(...).
+doencaRespiratoria(cancer_de_pulmao).
+doencaRespiratoria(tuberculose).
 
 doencaCardiovascular(acidente_vascular_cerebral).
 doencaCardiovascular(infarto_do_miocardio).
@@ -26,11 +26,85 @@ doencaCardiovascular(hipertensao1).
 doencaCardiovascular(sindrome_de_flammer).
 doencaCardiovascular(arritmia_cardiaca).
 
-doencaVirose(...).
-doencaVirose(...).
-doencaVirose(...).
-doencaVirose(...).
-doencaVirose(...).
+doencaVirose(dengue).
+doencaVirose(dengue_hemorragica).
+doencaVirose(rubeola).
+doencaVirose(hiv).
+
+emergencia(acidente_vascular_cerebral).
+emergencia(infarto_do_miocardio).
+emergencia(dengue_hemorragica).
+emergencia(rubeola).
+
+
+sintoma(febre,hiv).
+sintoma(tosse,hiv).
+sintoma(suor_noturno,hiv).
+sintoma(glanglios_aumentados,hiv).
+sintoma(dor_de_cabeca,hiv).
+sintoma(manchas_vermelhas_na_pele,hiv).
+sintoma(diarreia,hiv).
+sintoma(nausea,hiv).
+sintoma(vomito,hiv).
+sintoma(perda_de_peso,hiv).
+sintoma(dor_nas_articulacoes,hiv).
+sintoma(dor_nos_musculos,hiv).
+sintoma(fadiga,hiv).
+sintoma(candidiase_oral,hiv).
+sintoma(candidiase_genital,hiv).
+sintoma(dificultade_de_concentracao,hiv).
+
+sintoma(mal_estar,rubeola).
+sintoma(tosse,rubeola).
+sintoma(espirro,rubeola).
+sintoma(secrecao_nasal,rubeola).
+sintoma(dor_de_cabeca,rubeola).
+sintoma(conjutivite,rubeola).
+sintoma(glanglios_aumentados,rubeola).
+sintoma(manchas_vermelhas,rubeola).
+sintoma(coceira_na_pele,rubeola).
+
+sintoma(febre,dengue).
+sintoma(vomito,dengue).
+sintoma(dor_de_cabeca,dengue).
+sintoma(dor_no_corpo,dengue).
+sintoma(dor_nos_olhos,dengue).
+sintoma(manchas_vermelhas,dengue).
+sintoma(fadiga,dengue).
+sintoma(dor_nas_articulacoes,dengue).
+sintoma(sangramento_pelo_nariz,dengue).
+sintoma(sangramento_pelo_olhos,dengue).
+sintoma(sangramento_pelo_gengiva,dengue).
+sintoma(cor_urina_alterada,dengue).
+
+sintoma(confusao_mental,dengue_hemorragica).
+sintoma(urina_com_sangue,dengue_hemorragica).
+sintoma(vomito,dengue_hemorragica).
+sintoma(olhos_vermelhos,dengue_hemorragica).
+sintoma(sonolencia,dengue_hemorragica).
+sintoma(agitação,dengue_hemorragica).
+sintoma(sangramento_pelo_nariz,dengue_hemorragica).
+sintoma(sangramento_pelo_gengiva,dengue_hemorragica).
+
+sintoma(tosse_longa,tuberculose).
+sintoma(tosse_com_sangue,tuberculose).
+sintoma(dor_ao_respirar,tuberculose).
+sintoma(falta_de_ar,tuberculose).
+sintoma(febre,tuberculose).
+sintoma(suor_noturno,tuberculose).
+sintoma(perda_de_peso,tuberculose).
+sintoma(dor_no_peito,tuberculose).
+sintoma(catarro_amarelo,tuberculose).
+sintoma(catarro_verde,tuberculose).
+
+sintoma(tosse,cancer_de_pulmao).
+sintoma(falta_de_ar,cancer_de_pulmao).
+sintoma(perda_de_peso,cancer_de_pulmao).
+sintoma(tosse_com_sangue,cancer_de_pulmao).
+sintoma(fadiga,cancer_de_pulmao).
+sintoma(nauseas,cancer_de_pulmao).
+sintoma(dor_no_peito,cancer_de_pulmao).
+sintoma(vomito,cancer_de_pulmao).
 
 sintoma(dor_no_peito, diabetes).
 sintoma(nausea, diabetes).
@@ -188,13 +262,68 @@ sintoma(insuficiencia_cardiada,miocardite).
 
 
 
+concatenacao([], YS, YS).
+concatenacao([X | XS], YS, [X | XSYS]) :-
+concatenacao(XS, YS, XSYS).
 
+
+maxRepeated([], []).
+maxRepeated(L, E) :-
+    msort(L, [H|T]),
+    maxRepeated(T, H, H, 1, 0, E), !.
+
+maxRepeated([], H, _, C1, C2, H) :- C1 >= C2.
+maxRepeated([], _, X, C1, C2, X) :- C1 < C2.
+
+maxRepeated([H|T], H, LastF, C1, C2, E) :-
+    maxRepeated(T, H, LastF, C1 + 1, C2, E).
+
+maxRepeated([X|T], H, LastF, C1, C2, E) :-
+    (
+        C1 > C2
+        ->  maxRepeated(T, X, H, 1, C1, E)
+        ;   maxRepeated(T, X, LastF, 1, C2, E)
+    ).
+
+maxRepeated1([], [], _).
+maxRepeated1(L, E, N) :-
+    msort(L, [H|T]),
+    maxRepeated1(T, H, H, 1, 0, E, N), !.
+
+maxRepeated1([], H, _, C1, C2, H, N) :- C1 >= C2, H \== N.
+maxRepeated1([], _, X, C1, C2, X, N) :- C1 < C2, X \== N.
+
+maxRepeated1([H|T], H, LastF, C1, C2, E, N) :-
+    maxRepeated1(T, H, LastF, C1 + 1, C2, E, N).
+
+maxRepeated1([X|T], H, LastF, C1, C2, E, N) :-
+    (
+        C1 > C2
+        ->  maxRepeated1(T, X, H, 1, C1, E, N)
+        ;   maxRepeated1(T, X, LastF, 1, C2, E, N)
+    ).
+
+pp([H|T ], I):- !,
+J is I + 3,
+pp(H, J),
+ppx(T, J).
+pp(X, I):- spaces(I), write(X), nl.
+ppx([],_).
+ppx([H|T], I):- pp(H, I), ppx(T, I).
+
+sublist(S,M,N,[_A|B]):- M>0, M<N, sublist(S,M-1,N-1,B).
+sublist(S,M,N,[A|B]):- 0 is M, M<N, N2 is N-1, S=[A|D], sublist(D,0,N2,B).
+sublist([],0,0,_).
 
 sintoma1(X) :- sintoma(X,_).
 doenca1(X) :- sintoma(_,X).
 listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
 listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
 listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
+
+confirmaSintomas1() :- L= [_|_], dialogo1(L, 0, I), sublist(L1, 0, I, L), maxRepeated(L1, M1), maxRepeated1(L1,M2,M1), write('As hipóteses de doenças são: '), write(M1), write(' e '), write(M2).
+
+dialogo1(L, I, IF) :- phh(['Digite', o, indice, de, um, sintoma, apresentado, com, o, mesmo, nome, 'abaixo,', ou, '-1', para, 'parar.']), imprimeTodosSintomas(), read(S), T is S, (T == -1 -> IF is I,!; listaSintomas(LS), nth0(T, LS, E), listaDoencasPorSintoma(E, LD), nth0(I, L, LD), I1 is I+1, dialogo1(L, I1, IF)).
 
 
 doencaPorClasse(C, L) :-
@@ -210,6 +339,18 @@ doencaPorClasse(C, L) :-
 spaces(0):- !.
 spaces(N):- write(' '), N1 is N-1, spaces(N1).
 
+max([], R, R).
+max([X|Xs], WK, R):- X >  WK, max(Xs, X, R).
+max([X|Xs], WK, R):- X =< WK, max(Xs, WK, R).
+max([X|Xs], R):- max(Xs, X, R).
+
+max1([], R, R, M).
+max1([X|Xs], WK, R, M):- X >  WK, X < M,max1(Xs, X, R, M).
+max1([X|Xs], WK, R, M):- X =< WK, WK = M,max1(Xs, X, R, M).
+max1([X|Xs], WK, R, M):- X =< WK, WK < M,max1(Xs, WK, R, M).
+max1([X|Xs], R, M):- max1(Xs, X, R, M).
+
+
 indexOf([Element|_], Element, 0):- !.
 indexOf([_|Tail], Element, Index):-
   indexOf(Tail, Element, Index1),
@@ -222,25 +363,38 @@ replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
 pd([]) :- nl.
 pd([H|T]) :- write(H), pd([]), pd(T).
 
+ps([], L) :- nl.
+ps([H|T], L) :-  indexOf(L, H, I), write(I), spaces(1), write(H), pd([]), ps(T, L).
+
+phh([]) :- nl.
+phh([H|T]) :- write(H), spaces(1), phh(T).
+
 build(X, N, List)  :-
     length(List, N),
     maplist(=(X), List).
 
-aumentarPrioridades([], _, _) :- !.
-aumentarPrioridades([ES|LS], LD, LP) :-  indexOf(LD, ES, I), nth(I, LP, EP), replace(LP, I, EP+1), aumentarPrioridade(LS, LD, LP).
+aumentarPrioridades([], _, _, _) :- !.
+aumentarPrioridades([ES|LS], LD, LP, L) :-  indexOf(LD, ES, I), nth0(I, LP, EP), replace(LP, I, EP+1, L), aumentarPrioridades(LS, LD, L, L).
 
-confirmaSintomas() :- listaDoencas(LD), length(LD, TD), build(0,TD,LP).
+confirmaSintomas() :- listaDoencas(LD), length(LD, TD), build(0,TD,LP), dialogo(LD, LP, L),  max(L, M1), max1(L, M2, M1), max1(L, M3, M2), indexOf(L, M1, M1I), indexOf(L, M2, M2I), indexOf(L, M3, M3I), nth0(M1I, LD, D1), nth0(M2I, LD, D2), nth0(M3I, LD, D3), phh(['As', possiveis, doencas, 'são:', D1, ',', D2, ',', D3,'.']).
 
-confirmaSintoma(S, LD, LP) :- listaDoencasPorSintoma(S,LS), aumentarPrioridades(LS, LD, LP).
+dialogo(LD, LP, L) :- phh(['Digite', o, indice, de, um, sintoma, apresentado, com, o, mesmo, nome, 'abaixo,', ou, '-1', para, 'parar.']), imprimeTodosSintomas(), read(S), T is S, (T == -1 -> !; confirmaSintoma(T, LD, LP, L), dialogo(LD, L, L)).
+
+
+confirmaSintoma(S, LD, LP, L) :- listaSintomas(L), nth0(S, L, E) , listaDoencasPorSintoma(E,LS), aumentarPrioridades(LS, LD, LP, L).
 
 imprimeDoencaPorClasse(C) :- doencaPorClasse(C, L), pd([]), pd(L).
-imprimeTodosSintomas() :- listaSintomas(L), pd(L), !.
+imprimeTodosSintomas() :- listaSintomas(L), ps(L, L), !.
 imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
-diagnostico().
+diagnostico() :- confirmaSintomas().
 imprimeDoencasDeEmergencia().
 adicionarDoenca().
 indicacaoProfissional().
 login().
+indicaMedico('Cadiologista',Y) :- doencaCardiovascular(Y).
+indicaMedico('Otorrinolaringologista',Y) :- doencaRespiratoria(Y).
+indicaMedico('Clinico Geral para indicar um Especialista',Y) :- doencaCronica(Y).
+indicaMedico('Clinico Geral',Y) :- doencaVirose(Y).
 
 
 
