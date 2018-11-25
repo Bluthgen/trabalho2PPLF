@@ -1,4 +1,10 @@
-:- use_module(library(heaps)).
+:- discontiguous usuario/1.
+:- discontiguous senha/2.
+:- discontiguous doencaRespiratoria/1.
+:- discontiguous doencaCardiovascular/1.
+:- discontiguous doencaCronica/1.
+:- discontiguous doencaVirose/1.
+:- discontiguous sintoma/2.
 
 doenca(X) :- doencaRespiratoria(X).
 doenca(X) :- doencaCardiovascular(X).
@@ -325,7 +331,7 @@ listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
 listaEmergencia(L) :- setof(X, emergencia(X), L), member(X, L), !.
 listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
 
-confirmaSintomas() :- L= [_|_], numeroIteracoes(N), recursao(L, 0, N), sublist(L1, 0, N, L), flatten(L1,L2), maxRepeated(L2, M1), phh(['A', doença, com, mais, sintomas, em, comum, com, o, apresentado, é, M1]).
+confirmaSintomas() :- L= [_|_], numeroIteracoes(N), recursao(L, 0, N), sublist(L1, 0, N, L), flatten(L1,L2), maxRepeated(L2, M1), phh(['A', doença, com, mais, sintomas, em, comum, com, o, apresentado, é, M1]), indicacaoProfissional(M1).
 
 recursao(_, I, N) :- I == N.
 
@@ -382,7 +388,11 @@ confirmaSenha(Nome) :- write('Digite sua senha: '), read(Senha), (senha(Nome, Se
 
 verificaLogin() :- write('Digite seu nome de usuário: '), read(Nome), (usuario(Nome) -> confirmaSenha(Nome) ; write('Usuário não encontrado. Entrando como convidado.'), flag(logado, _, convidado)).
 
-escreveNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), escreveDoenca(Arq, Terminal, D), write('Digite o numero de sintomas a serem cadastrados: '), read(Num), escreveSintomas(Arq, Terminal, D, 0, Num), close(Arq).
+escreveUsuarioNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), escreveUsuario(Arq, Terminal), set_output(Terminal), close(Arq).
+
+escreveUsuario(Arq, Terminal) :- set_output(Terminal), write('Digite o nome de login do novo usuario: '), read(User), write('Escreva a senha de '), write(User), write(': '), read(Senha), set_output(Arq), write('usuario('), write(User), write(').'), nl, write('senha('), write(User), write(','), write(Senha), write(').').
+
+escreveDoencaNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), escreveDoenca(Arq, Terminal, D), write('Digite o numero de sintomas a serem cadastrados: '), read(Num), escreveSintomas(Arq, Terminal, D, 0, Num), close(Arq).
 
 escreveDoenca(Arq, Terminal, Doenca) :- set_output(Terminal), write('Digite o nome da doenca a ser cadastrada: '), read(Doenca), write('Digite a classe da doenca (cronica, cardiovascular, respiratoria, virose): '), read(Classe),set_output(Arq), write('doenca'),
 (Classe == 'cronica' -> write('Cronica(')
@@ -399,22 +409,9 @@ imprimeTodosSintomas() :- listaSintomas(L), ps(L, L), !.
 imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
 diagnostico() :- confirmaSintomas().
 imprimeDoencasDeEmergencia() :- listaEmergencia(L), pd(L).
-adicionarDoenca() :- get_flag(logado, usuario), escreveNoArquivo().
+adicionarDoenca() :- get_flag(logado, usuario), escreveDoencaNoArquivo(), make.
+adicionarUsuario() :- get_flag(logado, usuario), escreveUsuarioNoArquivo(), make.
 indicacaoProfissional(D) :- indicaMedico(M, D), phh(['Procure', um, M]), !.
 login() :- verificaLogin().
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
