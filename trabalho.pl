@@ -8,6 +8,8 @@
 
 :- use_module(library(plunit)).
 
+:- initialization(inicializacao()).
+
 doenca(X) :- doencaRespiratoria(X).
 doenca(X) :- doencaCardiovascular(X).
 doenca(X) :- doencaCronica(X).
@@ -282,12 +284,12 @@ usuario('doyle').
 usuario('ursula').
 usuario('owen').
 
-senha('hartmann', '123').
-senha('hearn', '123').
-senha('maurice', '123').
-senha('doyle', '123').
-senha('ursula', '123').
-senha('owen', '123').
+senha('hartmann', 123).
+senha('hearn', 123).
+senha('maurice', 123).
+senha('doyle', 123).
+senha('ursula', 123).
+senha('owen', 123).
 
 
 concatenacao([], YS, YS).
@@ -410,6 +412,22 @@ escreveSintomas(_, _, _, I, N) :- I == N.
 
 escreveSintomas(Arq, Terminal, D, I, N) :- set_output(Terminal), write('Digite o nome do sintoma: '), read(S), set_output(Arq), write('sintoma('), write(S), write(','), write(D), write(').'), nl, set_output(Terminal), I1 is I + 1, escreveSintomas(Arq, Terminal, D, I1, N).
 
+inicializacao() :- login(), menu().
+
+menu() :- nl, write('Seja bem vindo!, por favor digite o número correspondente a uma das funcionalidades: '), nl, write('1 - Realizar o Log-in novamente'), nl, write('2 - Ver todas as doenças cadastradas neste sistema'), nl, write('3 - Ver todos os sintomas cadastrados neste sintoma'), nl, write('4 - Ver as doenças consideradas de emergencia'), nl, write('5 - Buscar doencas de acordo com sua classe'), nl, write('6 - Indicação de profissional para lidar com a doença'), nl, write('7 - Diagnostico de doença de acordo com os sintomas'), nl, write('8 - Adicionar uma Doença e seus sintomas (Usuário cadastrado apenas)'), nl, write('9 - Remover uma doença (Usuario cadastrado apenas)'), nl, write('10 - Cadastrar novo usuário (Usuário cadastrado apenas)'), nl, write('0 - Sair'), nl, read(In), switchDoMenu(In).
+
+switchDoMenu(In) :- (In == 0 -> halt;
+                    In == 1 -> login();
+                    In == 2 -> imprimeTodasDoencas();
+                    In == 3 -> imprimeTodosSintomas();
+                    In == 4 -> imprimeDoencasDeEmergencia();
+                    In == 5 -> write('Qual classe de doenças? Cronica, respiratoria, cardiovascular ou virose: '), read(C), imprimeDoencaPorClasse(C);
+                    In == 6 -> write('Qual o nome da doença? '), read(D), indicacaoProfissional(D);
+                    In == 7 -> diagnostico();
+                    In == 8 -> adicionarDoenca();
+                    adicionarUsuario()),
+menu().
+
 imprimeDoencaPorClasse(C) :- doencaPorClasse(C, L), pd([]), pd(L).
 imprimeTodosSintomas() :- listaSintomas(L), ps(L, L), !.
 imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
@@ -419,7 +437,3 @@ adicionarDoenca() :- get_flag(logado, usuario), escreveDoencaNoArquivo(), make.
 adicionarUsuario() :- get_flag(logado, usuario), escreveUsuarioNoArquivo(), make.
 indicacaoProfissional(D) :- indicaMedico(M, D), phh(['Procure', um, M]), !.
 login() :- verificaLogin().
-
-
-
-
