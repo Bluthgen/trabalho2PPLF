@@ -37,8 +37,6 @@ doencaVirose(dengue_hemorragica).
 doencaVirose(rubeola).
 doencaVirose(hiv).
 
-doencaExcluida(.).
-
 emergencia(acidente_vascular_cerebral).
 emergencia(infarto_do_miocardio).
 emergencia(dengue_hemorragica).
@@ -422,3 +420,4 @@ adicionarUsuario() :- get_flag(logado, usuario), escreveUsuarioNoArquivo(), make
 indicacaoProfissional(D) :- indicaMedico(M, D), phh(['Procure', um, M]), !.
 login() :- verificaLogin().
 
+doencaExcluida(.).
