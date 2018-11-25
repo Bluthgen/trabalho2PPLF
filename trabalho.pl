@@ -262,6 +262,26 @@ sintoma(insuficiencia_cardiada,miocardite).
 
 
 
+indicaMedico('Cadiologista',Y) :- doencaCardiovascular(Y).
+indicaMedico('Otorrinolaringologista',Y) :- doencaRespiratoria(Y).
+indicaMedico('Clinico Geral para que indique um Especialista',Y) :- doencaCronica(Y).
+indicaMedico('Clinico Geral',Y) :- doencaVirose(Y).
+
+usuario('hartmann').
+usuario('hearn').
+usuario('maurice').
+usuario('doyle').
+usuario('ursula').
+usuario('owen').
+
+senha('hartmann', '123').
+senha('hearn', '123').
+senha('maurice', '123').
+senha('doyle', '123').
+senha('ursula', '123').
+senha('owen', '123').
+
+
 concatenacao([], YS, YS).
 concatenacao([X | XS], YS, [X | XSYS]) :-
 concatenacao(XS, YS, XSYS).
@@ -285,25 +305,8 @@ maxRepeated([X|T], H, LastF, C1, C2, E) :-
         ;   maxRepeated(T, X, LastF, 1, C2, E)
     ).
 
-maxRepeated1([], [], _).
-maxRepeated1(L, E, N) :-
-    msort(L, [H|T]),
-    maxRepeated1(T, H, H, 1, 0, E, N), !.
 
-maxRepeated1([], H, _, C1, C2, H, N) :- C1 >= C2, H \== N.
-maxRepeated1([], _, X, C1, C2, X, N) :- C1 < C2, X \== N.
-
-maxRepeated1([H|T], H, LastF, C1, C2, E, N) :-
-    maxRepeated1(T, H, LastF, C1 + 1, C2, E, N).
-
-maxRepeated1([X|T], H, LastF, C1, C2, E, N) :-
-    (
-        C1 > C2
-        ->  maxRepeated1(T, X, H, 1, C1, E, N)
-        ;   maxRepeated1(T, X, LastF, 1, C2, E, N)
-    ).
-
-pp([H|T ], I):- !,
+pp([H|T], I):- !,
 J is I + 3,
 pp(H, J),
 ppx(T, J).
@@ -319,12 +322,18 @@ sintoma1(X) :- sintoma(X,_).
 doenca1(X) :- sintoma(_,X).
 listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
 listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
+listaEmergencia(L) :- setof(X, emergencia(X), L), member(X, L), !.
 listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
 
-confirmaSintomas1() :- L= [_|_], dialogo1(L, 0, I), sublist(L1, 0, I, L), maxRepeated(L1, M1), maxRepeated1(L1,M2,M1), write('As hipóteses de doenças são: '), write(M1), write(' e '), write(M2).
+confirmaSintomas() :- L= [_|_], numeroIteracoes(N), recursao(L, 0, N), sublist(L1, 0, N, L), flatten(L1,L2), maxRepeated(L2, M1), phh(['A', doença, com, mais, sintomas, em, comum, com, o, apresentado, é, M1]).
 
-dialogo1(L, I, IF) :- phh(['Digite', o, indice, de, um, sintoma, apresentado, com, o, mesmo, nome, 'abaixo,', ou, '-1', para, 'parar.']), imprimeTodosSintomas(), read(S), T is S, (T == -1 -> IF is I,!; listaSintomas(LS), nth0(T, LS, E), listaDoencasPorSintoma(E, LD), nth0(I, L, LD), I1 is I+1, dialogo1(L, I1, IF)).
+recursao(_, I, N) :- I == N.
 
+recursao(L, I, N) :- dialogo(L, I, N), I1 is I + 1, recursao(L, I1, N).
+
+dialogo(L, I, C) :- C > I, phh(['Digite', o, indice, de, um, sintoma, apresentado, 'abaixo.']), imprimeTodosSintomas(), read(S), T is S, listaSintomas(LS), nth0(T, LS, E), listaDoencasPorSintoma(E, LD), nth0(I, L, LD).
+
+numeroIteracoes(N) :-  write("Quantos sintomas serão verificados? "), read(N).
 
 doencaPorClasse(C, L) :-
     (C = cronica ->
@@ -344,7 +353,7 @@ max([X|Xs], WK, R):- X >  WK, max(Xs, X, R).
 max([X|Xs], WK, R):- X =< WK, max(Xs, WK, R).
 max([X|Xs], R):- max(Xs, X, R).
 
-max1([], R, R, M).
+max1([], R, R, _).
 max1([X|Xs], WK, R, M):- X >  WK, X < M,max1(Xs, X, R, M).
 max1([X|Xs], WK, R, M):- X =< WK, WK = M,max1(Xs, X, R, M).
 max1([X|Xs], WK, R, M):- X =< WK, WK < M,max1(Xs, WK, R, M).
@@ -363,38 +372,41 @@ replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
 pd([]) :- nl.
 pd([H|T]) :- write(H), pd([]), pd(T).
 
-ps([], L) :- nl.
+ps([], _) :- nl.
 ps([H|T], L) :-  indexOf(L, H, I), write(I), spaces(1), write(H), pd([]), ps(T, L).
 
 phh([]) :- nl.
 phh([H|T]) :- write(H), spaces(1), phh(T).
 
-build(X, N, List)  :-
-    length(List, N),
-    maplist(=(X), List).
+confirmaSenha(Nome) :- write('Digite sua senha: '), read(Senha), (senha(Nome, Senha) -> flag(logado, _, usuario), write('Login efetuado com sucesso!'); write('Senha incorreta, tente novamente'), nl, confirmaSenha(Nome)).
 
-aumentarPrioridades([], _, _, _) :- !.
-aumentarPrioridades([ES|LS], LD, LP, L) :-  indexOf(LD, ES, I), nth0(I, LP, EP), replace(LP, I, EP+1, L), aumentarPrioridades(LS, LD, L, L).
+verificaLogin() :- write('Digite seu nome de usuário: '), read(Nome), (usuario(Nome) -> confirmaSenha(Nome) ; write('Usuário não encontrado. Entrando como convidado.'), flag(logado, _, convidado)).
 
-confirmaSintomas() :- listaDoencas(LD), length(LD, TD), build(0,TD,LP), dialogo(LD, LP, L),  max(L, M1), max1(L, M2, M1), max1(L, M3, M2), indexOf(L, M1, M1I), indexOf(L, M2, M2I), indexOf(L, M3, M3I), nth0(M1I, LD, D1), nth0(M2I, LD, D2), nth0(M3I, LD, D3), phh(['As', possiveis, doencas, 'são:', D1, ',', D2, ',', D3,'.']).
+escreveNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), escreveDoenca(Arq, Terminal, D), write('Digite o numero de sintomas a serem cadastrados: '), read(Num), escreveSintomas(Arq, Terminal, D, 0, Num), close(Arq).
 
-dialogo(LD, LP, L) :- phh(['Digite', o, indice, de, um, sintoma, apresentado, com, o, mesmo, nome, 'abaixo,', ou, '-1', para, 'parar.']), imprimeTodosSintomas(), read(S), T is S, (T == -1 -> !; confirmaSintoma(T, LD, LP, L), dialogo(LD, L, L)).
+escreveDoenca(Arq, Terminal, Doenca) :- set_output(Terminal), write('Digite o nome da doenca a ser cadastrada: '), read(Doenca), write('Digite a classe da doenca (cronica, cardiovascular, respiratoria, virose): '), read(Classe),set_output(Arq), write('doenca'),
+(Classe == 'cronica' -> write('Cronica(')
+; Classe == 'respiratoria' -> write('Respiratoria(')
+; Classe == 'cardiovascular' -> write('Cardiovascular(')
+; write('Virose(')), write(Doenca), write(').'), nl, set_output(Terminal).
 
+escreveSintomas(_, _, _, I, N) :- I == N.
 
-confirmaSintoma(S, LD, LP, L) :- listaSintomas(L), nth0(S, L, E) , listaDoencasPorSintoma(E,LS), aumentarPrioridades(LS, LD, LP, L).
+escreveSintomas(Arq, Terminal, D, I, N) :- set_output(Terminal), write('Digite o nome do sintoma: '), read(S), set_output(Arq), write('sintoma('), write(S), write(','), write(D), write(').'), nl, set_output(Terminal), I1 is I + 1, escreveSintomas(Arq, Terminal, D, I1, N).
 
 imprimeDoencaPorClasse(C) :- doencaPorClasse(C, L), pd([]), pd(L).
 imprimeTodosSintomas() :- listaSintomas(L), ps(L, L), !.
 imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
 diagnostico() :- confirmaSintomas().
-imprimeDoencasDeEmergencia().
-adicionarDoenca().
-indicacaoProfissional().
-login().
-indicaMedico('Cadiologista',Y) :- doencaCardiovascular(Y).
-indicaMedico('Otorrinolaringologista',Y) :- doencaRespiratoria(Y).
-indicaMedico('Clinico Geral para indicar um Especialista',Y) :- doencaCronica(Y).
-indicaMedico('Clinico Geral',Y) :- doencaVirose(Y).
+imprimeDoencasDeEmergencia() :- listaEmergencia(L), pd(L).
+adicionarDoenca() :- get_flag(logado, usuario), escreveNoArquivo().
+indicacaoProfissional(D) :- indicaMedico(M, D), phh(['Procure', um, M]), !.
+login() :- verificaLogin().
+
+
+
+
+
 
 
 
