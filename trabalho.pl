@@ -6,6 +6,8 @@
 :- discontiguous doencaVirose/1.
 :- discontiguous sintoma/2.
 
+:- use_module(library(plunit)).
+
 doenca(X) :- doencaRespiratoria(X).
 doenca(X) :- doencaCardiovascular(X).
 doenca(X) :- doencaCronica(X).
@@ -292,6 +294,12 @@ concatenacao([], YS, YS).
 concatenacao([X | XS], YS, [X | XSYS]) :-
 concatenacao(XS, YS, XSYS).
 
+:- begin_tests(concatenacao).
+test(vazia1) :- concatenacao([], [10,15], [10,15]).
+test(vazia2, Q == [10,15]) :- concatenacao([10,15], [], Q).
+test(concat, Q == [15,25,35]) :- concatenacao([10,20,30], Q, [10,20,30,15,25,35]).
+:- end_tests(concatenacao).
+
 
 maxRepeated([], []).
 maxRepeated(L, E) :-
@@ -310,6 +318,13 @@ maxRepeated([X|T], H, LastF, C1, C2, E) :-
         ->  maxRepeated(T, X, H, 1, C1, E)
         ;   maxRepeated(T, X, LastF, 1, C2, E)
     ).
+
+
+:- begin_tests(maxRepeated).
+test(repVazia, [nondet]) :- maxRepeated([], []).
+test(repeat1, Q == 10) :- maxRepeated([10, 2, 10, 4, 10,5,2, 5,10], Q).
+test(repeat2, Q == 15) :- maxRepeated([15,10,15,20,10,15,10,15,30,10,15,10,15], Q).
+:- end_tests(maxRepeated).
 
 
 pp([H|T], I):- !,
@@ -354,26 +369,17 @@ doencaPorClasse(C, L) :-
 spaces(0):- !.
 spaces(N):- write(' '), N1 is N-1, spaces(N1).
 
-max([], R, R).
-max([X|Xs], WK, R):- X >  WK, max(Xs, X, R).
-max([X|Xs], WK, R):- X =< WK, max(Xs, WK, R).
-max([X|Xs], R):- max(Xs, X, R).
-
-max1([], R, R, _).
-max1([X|Xs], WK, R, M):- X >  WK, X < M,max1(Xs, X, R, M).
-max1([X|Xs], WK, R, M):- X =< WK, WK = M,max1(Xs, X, R, M).
-max1([X|Xs], WK, R, M):- X =< WK, WK < M,max1(Xs, WK, R, M).
-max1([X|Xs], R, M):- max1(Xs, X, R, M).
-
-
 indexOf([Element|_], Element, 0):- !.
 indexOf([_|Tail], Element, Index):-
   indexOf(Tail, Element, Index1),
   !,
   Index is Index1+1.
 
-replace([_|T], 0, X, [X|T]).
-replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
+:- begin_tests(indexOf).
+test(indexVazia, [fail]) :- indexOf([], 10, 0).
+test(index1, Q == 0) :- indexOf([10, 2, 10, 4, 10,5,2, 5,10], 10, Q).
+test(repeat2, Q == 15) :- indexOf([15,10,15,20,10,15,10,15,30,10,15,10,15], Q, 0).
+:- end_tests(indexOf).
 
 pd([]) :- nl.
 pd([H|T]) :- write(H), pd([]), pd(T).
@@ -413,5 +419,7 @@ adicionarDoenca() :- get_flag(logado, usuario), escreveDoencaNoArquivo(), make.
 adicionarUsuario() :- get_flag(logado, usuario), escreveUsuarioNoArquivo(), make.
 indicacaoProfissional(D) :- indicaMedico(M, D), phh(['Procure', um, M]), !.
 login() :- verificaLogin().
+
+
 
 
