@@ -5,6 +5,11 @@
 :- discontiguous doencaCronica/1.
 :- discontiguous doencaVirose/1.
 :- discontiguous sintoma/2.
+:- discontiguous doencaExcluida/1.
+
+:- use_module(library(plunit)).
+
+:- initialization(inicializacao()).
 
 doenca(X) :- doencaRespiratoria(X).
 doenca(X) :- doencaCardiovascular(X).
@@ -38,6 +43,7 @@ doencaVirose(rubeola).
 doencaVirose(hiv).
 
 doencaExcluida(.).
+
 
 emergencia(acidente_vascular_cerebral).
 emergencia(infarto_do_miocardio).
@@ -282,17 +288,23 @@ usuario('doyle').
 usuario('ursula').
 usuario('owen').
 
-senha('hartmann', '123').
-senha('hearn', '123').
-senha('maurice', '123').
-senha('doyle', '123').
-senha('ursula', '123').
-senha('owen', '123').
+senha('hartmann', 123).
+senha('hearn', 123).
+senha('maurice', 123).
+senha('doyle', 123).
+senha('ursula', 123).
+senha('owen', 123).
 
 
 concatenacao([], YS, YS).
 concatenacao([X | XS], YS, [X | XSYS]) :-
 concatenacao(XS, YS, XSYS).
+
+:- begin_tests(concatenacao).
+test(vazia1) :- concatenacao([], [10,15], [10,15]).
+test(vazia2, Q == [10,15]) :- concatenacao([10,15], [], Q).
+test(concat, Q == [15,25,35]) :- concatenacao([10,20,30], Q, [10,20,30,15,25,35]).
+:- end_tests(concatenacao).
 
 
 maxRepeated([], []).
@@ -314,6 +326,13 @@ maxRepeated([X|T], H, LastF, C1, C2, E) :-
     ).
 
 
+:- begin_tests(maxRepeated).
+test(repVazia, [nondet]) :- maxRepeated([], []).
+test(repeat1, Q == 10) :- maxRepeated([10, 2, 10, 4, 10,5,2, 5,10], Q).
+test(repeat2, Q == 15) :- maxRepeated([15,10,15,20,10,15,10,15,30,10,15,10,15], Q).
+:- end_tests(maxRepeated).
+
+
 pp([H|T], I):- !,
 J is I + 3,
 pp(H, J),
@@ -329,7 +348,7 @@ sublist([],0,0,_).
 sintoma1(X) :- sintoma(X,_).
 doenca1(X) :- sintoma(_,X), not(doencaExcluida(X)).
 listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
-listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L).
+listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L), not(doencaExcluida(X)).
 listaEmergencia(L) :- setof(X, emergencia(X), L), member(X, L), !.
 listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
 
@@ -356,26 +375,17 @@ doencaPorClasse(C, L) :-
 spaces(0):- !.
 spaces(N):- write(' '), N1 is N-1, spaces(N1).
 
-max([], R, R).
-max([X|Xs], WK, R):- X >  WK, max(Xs, X, R).
-max([X|Xs], WK, R):- X =< WK, max(Xs, WK, R).
-max([X|Xs], R):- max(Xs, X, R).
-
-max1([], R, R, _).
-max1([X|Xs], WK, R, M):- X >  WK, X < M,max1(Xs, X, R, M).
-max1([X|Xs], WK, R, M):- X =< WK, WK = M,max1(Xs, X, R, M).
-max1([X|Xs], WK, R, M):- X =< WK, WK < M,max1(Xs, WK, R, M).
-max1([X|Xs], R, M):- max1(Xs, X, R, M).
-
-
 indexOf([Element|_], Element, 0):- !.
 indexOf([_|Tail], Element, Index):-
   indexOf(Tail, Element, Index1),
   !,
   Index is Index1+1.
 
-replace([_|T], 0, X, [X|T]).
-replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
+:- begin_tests(indexOf).
+test(indexVazia, [fail]) :- indexOf([], 10, 0).
+test(index1, Q == 0) :- indexOf([10, 2, 10, 4, 10,5,2, 5,10], 10, Q).
+test(repeat2, Q == 15) :- indexOf([15,10,15,20,10,15,10,15,30,10,15,10,15], Q, 0).
+:- end_tests(indexOf).
 
 pd([]) :- nl.
 pd([H|T]) :- write(H), pd([]), pd(T).
@@ -406,18 +416,38 @@ escreveSintomas(_, _, _, I, N) :- I == N.
 
 escreveSintomas(Arq, Terminal, D, I, N) :- set_output(Terminal), write('Digite o nome do sintoma: '), read(S), set_output(Arq), write('sintoma('), write(S), write(','), write(D), write(').'), nl, set_output(Terminal), I1 is I + 1, escreveSintomas(Arq, Terminal, D, I1, N).
 
-
 escreveNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), excluiDoenca(Arq, Terminal, D),  set_output(Terminal), close(Arq).
 
 excluiDoenca(Arq, Terminal, Doenca) :- set_output(Terminal), write('Digite o nome da doenca a ser excluida: '), read(Doenca),set_output(Arq), write('doencaExcluida('), write(Doenca), write(').').
 
-imprimeDoencaPorClasse(C) :- doencaPorClasse(C, L), pd([]), pd(L).
+
+inicializacao() :- login(), menu().
+
+menu() :- nl, write('Seja bem vindo!, por favor digite o número correspondente a uma das funcionalidades: '), nl, write('1 - Realizar o Log-in novamente'), nl, write('2 - Ver todas as doenças cadastradas neste sistema'), nl, write('3 - Ver todos os sintomas cadastrados neste sintoma'), nl, write('4 - Ver as doenças consideradas de emergencia'), nl, write('5 - Buscar doencas de acordo com sua classe'), nl, write('6 - Indicação de profissional para lidar com a doença'), nl, write('7 - Diagnostico de doença de acordo com os sintomas'), nl, write('8 - Adicionar uma Doença e seus sintomas (Usuário cadastrado apenas)'), nl, write('9 - Remover uma doença (Usuario cadastrado apenas)'), nl, write('10 - Cadastrar novo usuário (Usuário cadastrado apenas)'), nl, write('0 - Sair'), nl, read(In), switchDoMenu(In).
+
+switchDoMenu(In) :- (In == 0 -> halt;
+                    In == 1 -> login();
+                    In == 2 -> imprimeTodasDoencas();
+                    In == 3 -> imprimeTodosSintomas();
+                    In == 4 -> imprimeDoencasDeEmergencia();
+                    In == 5 -> write('Qual classe de doenças? Cronica, respiratoria, cardiovascular ou virose: '), read(C), imprimeDoencaPorClasse(C);
+                    In == 6 -> write('Qual o nome da doença? '), read(D), indicacaoProfissional(D);
+                    In == 7 -> diagnostico();
+                    In == 8 -> adicionarDoenca();
+                    In == 9 -> excluirDoenca();
+                    adicionarUsuario()), menu().
+
+
+
+
+
+imprimeDoencaPorClasse(C):- doencaPorClasse(C, L), pd([]), pd(L).
 imprimeTodosSintomas() :- listaSintomas(L), ps(L, L), !.
 imprimeTodasDoencas() :- listaDoencas(L), pd(L), !.
 diagnostico() :- confirmaSintomas().
 imprimeDoencasDeEmergencia() :- listaEmergencia(L), pd(L).
 adicionarDoenca() :- get_flag(logado, usuario), escreveDoencaNoArquivo(), make.
-deletarDoenca():- get_flag(logado, usuario), escreveNoArquivo(), make.
+excluirDoenca():- get_flag(logado, usuario), escreveNoArquivo(), make.
 adicionarUsuario() :- get_flag(logado, usuario), escreveUsuarioNoArquivo(), make.
 indicacaoProfissional(D) :- indicaMedico(M, D), phh(['Procure', um, M]), !.
 login() :- verificaLogin().
