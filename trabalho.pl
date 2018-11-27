@@ -306,6 +306,8 @@ test(vazia2, Q == [10,15]) :- concatenacao([10,15], [], Q).
 test(concat, Q == [15,25,35]) :- concatenacao([10,20,30], Q, [10,20,30,15,25,35]).
 :- end_tests(concatenacao).
 
+% Função para se encontrar o elemento que mais se repete em uma lista.
+% Para isso, a lista é ordenada e são contados os elementos repetidos, e qual mais se repete.
 
 maxRepeated([], []).
 maxRepeated(L, E) :-
@@ -345,6 +347,10 @@ sublist(S,M,N,[_A|B]):- M>0, M<N, sublist(S,M-1,N-1,B).
 sublist(S,M,N,[A|B]):- 0 is M, M<N, N2 is N-1, S=[A|D], sublist(D,0,N2,B).
 sublist([],0,0,_).
 
+% ! Funções que fazem a listagem de todos os sintomas(sem repetição),
+% todas as doenças, as doenças de emergencia, lista de doenças por
+% sintoma, lista de sintomas por doença.
+
 sintoma1(X) :- sintoma(X,_).
 doenca1(X) :- sintoma(_,X), not(doencaExcluida(X)).
 listaSintomas(L) :-  setof(X, sintoma1(X), L), member(X,L).
@@ -352,6 +358,10 @@ listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L), not(doencaExcluida(X))
 listaEmergencia(L) :- setof(X, emergencia(X), L), member(X, L), !.
 listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
 
+% Funções para o diagnóstico de uma doença,
+% montando uma lista com as listas de doenças associadas
+% a cada sintoma inserido pelo usuário, aplainando a lista
+% e buscando o elemento que mais se repete.
 confirmaSintomas() :- L= [_|_], numeroIteracoes(N), recursao(L, 0, N), sublist(L1, 0, N, L), flatten(L1,L2), maxRepeated(L2, M1),not(doencaExcluida(M1)), phh(['A', doença, com, mais, sintomas, em, comum, com, o, apresentado, é, M1]), indicacaoProfissional(M1).
 
 recursao(_, I, N) :- I == N.
