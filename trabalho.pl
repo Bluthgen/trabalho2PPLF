@@ -352,7 +352,7 @@ listaDoencas(L) :-  setof(X, doenca1(X), L), member(X,L), not(doencaExcluida(X))
 listaEmergencia(L) :- setof(X, emergencia(X), L), member(X, L), !.
 listaDoencasPorSintoma(X, L) :- setof(D, sintoma(X,D), L), member(D,L),!.
 
-confirmaSintomas() :- L= [_|_], numeroIteracoes(N), recursao(L, 0, N), sublist(L1, 0, N, L), flatten(L1,L2), maxRepeated(L2, M1), phh(['A', doença, com, mais, sintomas, em, comum, com, o, apresentado, é, M1]), indicacaoProfissional(M1).
+confirmaSintomas() :- L= [_|_], numeroIteracoes(N), recursao(L, 0, N), sublist(L1, 0, N, L), flatten(L1,L2), maxRepeated(L2, M1),not(doencaExcluida(M1)), phh(['A', doença, com, mais, sintomas, em, comum, com, o, apresentado, é, M1]), indicacaoProfissional(M1).
 
 recursao(_, I, N) :- I == N.
 
@@ -400,9 +400,18 @@ confirmaSenha(Nome) :- write('Digite sua senha: '), read(Senha), (senha(Nome, Se
 
 verificaLogin() :- write('Digite seu nome de usuário: '), read(Nome), (usuario(Nome) -> confirmaSenha(Nome) ; write('Usuário não encontrado. Entrando como convidado.'), flag(logado, _, convidado)).
 
+% ! Função que escreve em um arquivo um novo usuario e senha para login
+% no sistema e concatena no final do arquivo fonte.
+
 escreveUsuarioNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), escreveUsuario(Arq, Terminal), set_output(Terminal), close(Arq).
 
 escreveUsuario(Arq, Terminal) :- set_output(Terminal), write('Digite o nome de login do novo usuario: '), read(User), write('Escreva a senha de '), write(User), write(': '), read(Senha), set_output(Arq), write('usuario('), write(User), write(').'), nl, write('senha('), write(User), write(','), write(Senha), write(').').
+
+% ! Função que escreve em um arquivo uma nova doença e seus
+% sintomas no padrao do arquivo e o concatena com o arquivo fonte.
+%  para pegar uma doença é necessario passar o nome da doença e
+%  depois a classe dela, para pegar os sintomar é passado o numeros dos
+%  sintomas e é feito um loop com essa quantidade.
 
 escreveDoencaNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), escreveDoenca(Arq, Terminal, D), write('Digite o numero de sintomas a serem cadastrados: '), read(Num), escreveSintomas(Arq, Terminal, D, 0, Num), close(Arq).
 
@@ -415,11 +424,15 @@ escreveDoenca(Arq, Terminal, Doenca) :- set_output(Terminal), write('Digite o no
 escreveSintomas(_, _, _, I, N) :- I == N.
 
 escreveSintomas(Arq, Terminal, D, I, N) :- set_output(Terminal), write('Digite o nome do sintoma: '), read(S), set_output(Arq), write('sintoma('), write(S), write(','), write(D), write(').'), nl, set_output(Terminal), I1 is I + 1, escreveSintomas(Arq, Terminal, D, I1, N).
+%! %%%%%%-------------
 
+%%%%%%%%%%%%%% Função que concatena com o arquivo fonte um
+%%%%%%%%%%%%%% aqrvuivo que contem um predicado de uma doença que foi
+%%%%%%%%%%%%%% excluida.
 escreveNoArquivo() :- current_output(Terminal), open('trabalho.pl', append, Arq), excluiDoenca(Arq, Terminal, D),  set_output(Terminal), close(Arq).
 
 excluiDoenca(Arq, Terminal, Doenca) :- set_output(Terminal), write('Digite o nome da doenca a ser excluida: '), read(Doenca),set_output(Arq), write('doencaExcluida('), write(Doenca), write(').').
-
+%%%%%%%%%--------------
 
 inicializacao() :- login(), menu().
 
